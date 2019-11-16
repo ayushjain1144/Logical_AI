@@ -1,0 +1,20 @@
+human(marcus)
+pompeian(marcus)
+born(marcus, 40)
+human(x1) ==> mortal(x1)
+volcano(79)
+pompeian(x2) & volcano(79) ==> died(x2, 79)
+mortal(x3) & born(x3, y3) ==> died(x3, y3 + 150)
+present(2019)
+died(x4, y4) & gt(t1, y4) ==> dead(x4, t1)
+pompeian(x5) ==> roman(x5)
+ruler(caesar)
+assassinate(marcus, caesar)
+alive(x6, y6) ==> dead(x6, y6)
+loyal(x8, y8) & hate(x8, y8) ==> false
+hate(x9, y9) & loyal(x9, y9) ==> false
+human(x11) & loyal(x11, y11) & human(y11) ==> true
+assassinate(x12, y12) & human(x12) & ruler(y12) ==> not_loyal(x12, y12)
+loyal(x13, y13) & not_loyal(x13 & y13) ==> false
+roman(x14) & not_loyal(x14, caesat) & not_hate(x14, caesar) ==> true
+hate(x15, y15) & not_hate(x15, y15) ==> false

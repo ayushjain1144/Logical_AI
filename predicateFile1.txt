@@ -1,0 +1,17 @@
+human(x): x is a human
+pompeian(x): x is a pompeian
+born(x, y): x is born at y
+mortal(x): x is mortal
+died(x, y): x died in year y
+less_than(x, y): x is less than y
+gt(x,y): x is greater than y
+lives(x, y):x lives y years
+alive(x, y): x is alive in year y
+dead(x, y): x is dead in year y
+present(x): present year is x
+roman(x): x is roman
+ruler(x): x is ruler
+loyal(x, y): x is loyal to y
+hate(x, y): x hates y
+assassinate(x, y): x assassinate y
+volcano(x): volcano erupted in year x

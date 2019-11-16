@@ -236,7 +236,7 @@ class Tile(QWidget):
         super().__init__()
 
 
-        self.setFixedSize(QSize(25, 25))
+        self.setFixedSize(QSize(50, 50))
         self.x = x
         self.y = y
 
@@ -249,41 +249,27 @@ class Tile(QWidget):
         #self.number = 0
         self.is_gold = False
         self.is_pit = False
-        self.is_clicked = False
+       
 
         self.update()
 
-    def set_flag(self):
+    def set_wumpus(self):
         """Sets flag on discovered mines"""
 
-        self.is_flagged = True
-        self.reveal()
-
-
-
-    def reveal(self):
-        """Reveal the tile"""
-
-        self.is_revealed = True
+        self.is_wumpus = True
         self.update()
-        self.revealed.emit(self)
 
-    def undo_reveal(self):
-        """Undo Reveal of tile"""
+    def set_gold(self):
+        """Sets flag on discovered mines"""
 
-        self.is_revealed = False
+        self.is_gold = True
+        self.update()    
+
+    def set_pit(self):
+        """Sets flag on discovered mines"""
+
+        self.is_pit = True
         self.update()
-        self.revealed.emit(self)
-
-
-    def left_click(self):
-        """Emulates the functionality of left click in real Minesweeper"""
-
-        self.revealed.emit(self)
-
-        if self.number == 0:
-            self.expandable.emit(self.row,  self.col)
-        self.clicked.emit()
 
 
     def paintEvent(self, event):
@@ -293,58 +279,96 @@ class Tile(QWidget):
 
         object = event.rect()
 
-        #Conditions if the square is is_revealed
-
-        if self.is_revealed:
-
-            if not self.is_clicked:
-                pane.fillRect(object, QBrush(Qt.green))
-                pen = QPen(Qt.green)
-            else:
-                pane.fillRect(object, QBrush(Qt.blue))
-                pen = QPen(Qt.blue)
-            pen.setWidth(1)
-            pane.setPen(pen)
-            pane.drawRect(object)
-
-            if self.is_mine and not self.is_flagged:
-
-                pane.drawPixmap(object, QPixmap("bomb.png"))
-
-            elif self.is_flagged:
-                pane.drawPixmap(object, QPixmap("flag.png"))
-                pane.setOpacity(0.3)
-                pane.drawPixmap(object, QPixmap("bomb.png"))
-
-
-            elif self.number > 0:
-
-                pen = QPen(Qt.red)
-                pane.setPen(pen)
-                font = pane.font()
-                font.setBold(True)
-                pane.setFont(font)
-
-                pane.drawText(object, Qt.AlignHCenter | Qt.AlignVCenter, str(self.number))
-
-        else:
+        if self.is_wumpus:
 
             pane.fillRect(object, QBrush(Qt.lightGray))
-            pen = QPen(Qt.gray)
+            pen = QPen(Qt.black)
             pen.setWidth(1)
             pane.setPen(pen)
             pane.drawRect(object)
 
+        elif self.is_pit:
+            pane.fillRect(object, QBrush(Qt.brown))
+            pen = QPen(Qt.black)
+            pen.setWidth(1)
+            pane.setPen(pen)
+            pane.drawRect(object)
+            
+        elif self.is_gold:
+            pane.fillRect(object, QBrush(Qt.gold))
+            pen = QPen(Qt.black)
+            pen.setWidth(1)
+            pane.setPen(pen)
+            pane.drawRect(object)
+        else:
+            pane.fillRect(object, QBrush(Qt.white))
+            pen = QPen(Qt.black)
+            pen.setWidth(1)
+            pane.setPen(pen)
+            pane.drawRect(object)            
+
+       
+class WumpusWorld(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+
+        self.row = 8
+        self.col = 8
+
+        self.setWindowTitle(f"AI Wumpus World")
+
+        vert_layout = QVBoxLayout()
+
+        self.grid = QGridLayout()
+        self.grid.setSpacing(1)
+
+        vert_layout.addLayout(self.grid)
+        window = QWidget()
+        window.setLayout(vert_layout)
+        self.setCentralWidget(window)
+
+        self.init_map()
+        self.reset_map()
+
+        self.show()
+
+        
+
+    def init_map(self):
+        """Added boxes on GUI"""
+
+        for r in range(self.row):
+            for c in range(self.col):
+                box = Tile(r, c)
+                self.grid.addWidget(box, r, c)
+
+                
+
+    def reset_map(self):
+        """Resets everything to inital state"""
+
+        self.reset_position()
+        #self.add_elements()
 
 
+    def reset_position(self):
+        """Clears the tiles"""
 
-            if self.is_mine:
-                pane.setOpacity(0.3)
-                pane.drawPixmap(object, QPixmap("bomb.png"))
+        for r in range(self.row):
+            for c in range(self.col):
+                box = self.grid.itemAtPosition(r, c).widget()
+                box.initialize()
+
+    def add_elements(self):
+        """Adds the wumpus, coins and the pit"""
+        
+        pass
+        
 
 
 
 app = QApplication(sys.argv)
-ex = InputWidget()
+ex = WumpusWorld()
 sys.exit(app.exec_())
 

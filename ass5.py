@@ -249,9 +249,22 @@ class Tile(QWidget):
         #self.number = 0
         self.is_gold = False
         self.is_pit = False
-       
+        self.is_start = False
 
         self.update()
+
+
+    def set_start(self):
+        """Sets flag on discovered mines"""
+
+        self.is_start = True
+        self.update()
+
+    def unset_start(self):
+        """Sets flag on discovered mines"""
+
+        self.is_start = False
+        self.update()    
 
     def set_wumpus(self):
         """Sets flag on discovered mines"""
@@ -300,12 +313,16 @@ class Tile(QWidget):
             pen.setWidth(1)
             pane.setPen(pen)
             pane.drawRect(object)
+               
         else:
             pane.fillRect(object, QBrush(Qt.white))
             pen = QPen(Qt.black)
             pen.setWidth(1)
             pane.setPen(pen)
-            pane.drawRect(object)            
+            pane.drawRect(object) 
+
+        if self.is_start:
+            pane.drawPixmap(object, QPixmap("flag.png"))               
 
        
 class WumpusWorld(QMainWindow):
@@ -316,6 +333,8 @@ class WumpusWorld(QMainWindow):
         self.row = 8
         self.col = 8
 
+        self.curr_row = 0
+        self.curr_col = 0
         self.setWindowTitle(f"AI Wumpus World")
 
         vert_layout = QVBoxLayout()
@@ -331,7 +350,14 @@ class WumpusWorld(QMainWindow):
         self.init_map()
         self.reset_map()
 
+        
         self.show()
+        self.move_right()
+        self.move_down()
+        self.move_right()
+        self.move_down()
+        self.move_left()
+        self.move_up()
 
         
 
@@ -359,6 +385,50 @@ class WumpusWorld(QMainWindow):
             for c in range(self.col):
                 box = self.grid.itemAtPosition(r, c).widget()
                 box.initialize()
+
+        box = self.grid.itemAtPosition(0, 0).widget()        
+        box.set_start()
+
+    def move_left(self):
+        box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+        box.unset_start()
+        if self.curr_col > 0:
+            self.curr_col = self.curr_col - 1
+            box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+            box.set_start()
+        self.delay()    
+
+    def move_right(self):
+        box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+        box.unset_start()
+        if self.curr_col < 7:
+            self.curr_col = self.curr_col + 1
+            box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+            box.set_start()
+        self.delay()    
+
+    def move_up(self):
+        box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+        box.unset_start()
+        if self.curr_row > 0:
+            self.curr_row = self.curr_row - 1
+            box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+            box.set_start()
+        self.delay()                    
+
+    def move_down(self):
+        box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+        box.unset_start()
+        if self.curr_row < 7:
+            self.curr_row = self.curr_row + 1
+            box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+            box.set_start()
+        self.delay()
+
+    def delay(self):
+        loop = QEventLoop()
+        QTimer.singleShot(2000, loop.quit)
+        loop.exec_()
 
     def add_elements(self):
         """Adds the wumpus, coins and the pit"""

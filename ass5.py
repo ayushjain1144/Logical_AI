@@ -241,7 +241,7 @@ class Tile(QWidget):
         super().__init__()
 
 
-        self.setFixedSize(QSize(50, 50))
+        self.setFixedSize(QSize(100, 100))
         self.x = x
         self.y = y
 
@@ -342,8 +342,38 @@ class WumpusWorld(QMainWindow):
         self.curr_col = 0
         self.setWindowTitle(f"AI Wumpus World")
 
-        vert_layout = QVBoxLayout()
+        self.action = "Stay"
+        self.percept = "No percept"
+        self.label1 = QLabel()
+        self.label1.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.label1.setText(f"Percept: {self.percept}")
 
+        font = self.label1.font()
+        font.setPointSize(20)
+        font.setWeight(65)
+        self.label1.setFont(font)
+        self.label1.setFont(font)
+
+
+        self.label2 = QLabel()
+        self.label2.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.label2.setText(f"Action: {self.action}")
+
+        font = self.label2.font()
+        font.setPointSize(20)
+        font.setWeight(65)
+        self.label2.setFont(font)
+        self.label2.setFont(font)
+
+        self.fp = open('wumpusWorld.txt')
+
+
+        hor_layout = QHBoxLayout()
+        hor_layout.addWidget(self.label1)
+        hor_layout.addWidget(self.label2)
+
+        vert_layout = QVBoxLayout()
+        vert_layout.addLayout(hor_layout)
         self.grid = QGridLayout()
         self.grid.setSpacing(1)
 
@@ -360,6 +390,12 @@ class WumpusWorld(QMainWindow):
         self.take_actions()
 
         
+    def update_percept(self):
+
+        self.percept = self.fp.readline()
+        print(self.percept)
+        self.label1.setText(f"Percept: {self.percept}")
+        self.delay()
 
     def init_map(self):
         """Added boxes on GUI"""
@@ -390,6 +426,10 @@ class WumpusWorld(QMainWindow):
         box.set_start()
 
     def move_left(self):
+        self.action = "move left"
+        self.update_percept()
+        self.label2.setText(f"Action: {self.action}")
+
         box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
         box.unset_start()
         if self.curr_col > 0:
@@ -399,17 +439,27 @@ class WumpusWorld(QMainWindow):
         self.delay()    
 
     def move_right(self, num = 1):
-
+        
+        
         for i in range(num):
+            self.update_percept()
+            self.action = "move_right"
+            self.label2.setText(f"Action: {self.action}")
             box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
             box.unset_start()
             if self.curr_col < 7:
                 self.curr_col = self.curr_col + 1
                 box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
                 box.set_start()
+                
             self.delay()    
 
     def move_up(self):
+        self.action = "move_up"
+        self.update_percept()
+        self.label2.setText(f"Action: {self.action}")
+        
+        
         box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
         box.unset_start()
         if self.curr_row > 0:
@@ -419,6 +469,7 @@ class WumpusWorld(QMainWindow):
         self.delay()  
 
     def take_actions(self):
+        self.delay()
         self.move_right(3)
         self.move_left()                     
         self.move_down()
@@ -437,9 +488,17 @@ class WumpusWorld(QMainWindow):
         self.move_right()
         self.move_left()
         self.move_down()
+        self.action = "grab"
+        self.label2.setText(f"Action: {self.action}")
+
 
 
     def move_down(self):
+        self.action = "move_down"
+        self.update_percept()
+        self.label2.setText(f"Action: {self.action}")
+        
+       
         box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
         box.unset_start()
         if self.curr_row < 7:

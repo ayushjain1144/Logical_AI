@@ -19,6 +19,11 @@ logic_prob = 1
 fc = 0
 rl = 0
 
+
+wumpus_pos = [[0, 4], [4, 3], [4, 7], [5, 3]]
+pit_pos = [[1, 6], [2, 7], [3, 1], [5, 1], [7, 2], [7, 4]]
+gold_pos = [[5, 5]]
+
 def form_CNF(fname):
 
     fp = open(fname)
@@ -301,14 +306,14 @@ class Tile(QWidget):
             pane.drawRect(object)
 
         elif self.is_pit:
-            pane.fillRect(object, QBrush(Qt.brown))
+            pane.fillRect(object, QBrush(Qt.darkRed))
             pen = QPen(Qt.black)
             pen.setWidth(1)
             pane.setPen(pen)
             pane.drawRect(object)
             
         elif self.is_gold:
-            pane.fillRect(object, QBrush(Qt.gold))
+            pane.fillRect(object, QBrush(Qt.yellow))
             pen = QPen(Qt.black)
             pen.setWidth(1)
             pane.setPen(pen)
@@ -352,12 +357,7 @@ class WumpusWorld(QMainWindow):
 
         
         self.show()
-        self.move_right()
-        self.move_down()
-        self.move_right()
-        self.move_down()
-        self.move_left()
-        self.move_up()
+        self.take_actions()
 
         
 
@@ -375,7 +375,7 @@ class WumpusWorld(QMainWindow):
         """Resets everything to inital state"""
 
         self.reset_position()
-        #self.add_elements()
+        self.add_elements()
 
 
     def reset_position(self):
@@ -398,14 +398,16 @@ class WumpusWorld(QMainWindow):
             box.set_start()
         self.delay()    
 
-    def move_right(self):
-        box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
-        box.unset_start()
-        if self.curr_col < 7:
-            self.curr_col = self.curr_col + 1
+    def move_right(self, num = 1):
+
+        for i in range(num):
             box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
-            box.set_start()
-        self.delay()    
+            box.unset_start()
+            if self.curr_col < 7:
+                self.curr_col = self.curr_col + 1
+                box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
+                box.set_start()
+            self.delay()    
 
     def move_up(self):
         box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
@@ -414,7 +416,28 @@ class WumpusWorld(QMainWindow):
             self.curr_row = self.curr_row - 1
             box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
             box.set_start()
-        self.delay()                    
+        self.delay()  
+
+    def take_actions(self):
+        self.move_right(3)
+        self.move_left()                     
+        self.move_down()
+        self.move_right(2)
+        self.move_left()
+        self.move_down()
+        self.move_right(3)
+        self.move_left()
+        self.move_down()
+        self.move_right(2)
+        self.move_left()
+        self.move_down()
+        self.move_up()
+        self.move_left()
+        self.move_down()
+        self.move_right()
+        self.move_left()
+        self.move_down()
+
 
     def move_down(self):
         box = self.grid.itemAtPosition(self.curr_row, self.curr_col).widget()
@@ -433,7 +456,20 @@ class WumpusWorld(QMainWindow):
     def add_elements(self):
         """Adds the wumpus, coins and the pit"""
         
-        pass
+        global wumpus_pos
+        global pit_pos
+        global gold_pos
+
+        for i in wumpus_pos:
+            box = self.grid.itemAtPosition(i[0], i[1]).widget()
+            box.set_wumpus()
+        for i in pit_pos:
+            box = self.grid.itemAtPosition(i[0], i[1]).widget()
+            box.set_pit()
+        for i in gold_pos:
+            box = self.grid.itemAtPosition(i[0], i[1]).widget()
+            box.set_gold()        
+
         
 
 

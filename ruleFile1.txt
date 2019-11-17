@@ -12,7 +12,6 @@ ruler(caesar)
 assassinate(marcus, caesar)
 alive(x6, y6) ==> dead(x6, y6)
 loyal(x8, y8) & hate(x8, y8) ==> false
-hate(x9, y9) & loyal(x9, y9) ==> false
 human(x11) & loyal(x11, y11) & human(y11) ==> true
 assassinate(x12, y12) & human(x12) & ruler(y12) ==> not_loyal(x12, y12)
 loyal(x13, y13) & not_loyal(x13 & y13) ==> false

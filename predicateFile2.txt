@@ -1,0 +1,7 @@
+child(x): x is child
+parent(x, y): x is accompanied by 1
+accompany(x, y): x is accompanied by y
+same(x, y): x = y
+interest(x, y): x is interested in y
+isactivity(x): x is activity
+isparent(x): x is parent

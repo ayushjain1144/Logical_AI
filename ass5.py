@@ -84,19 +84,23 @@ def query(fname):
     logic_kb = form_KB('ruleFile1.txt')
 
     fp = open(fname)
+    fout = open(f'output-{fname}', 'w')
 
     for line in fp.readlines(): 
         answer = fol_fc_ask(logic_kb, expr(line))
         q = list(answer)
-        
+    
 
         if not q:
             print(False)
+            fout.write(f"{expr(line)}: False\n")
         elif q and not q[0]:
             print(True)
+            fout.write(f"{expr(line)}: True\n")
         else:
             
-            print(q[0])   
+            print(q[0])
+            fout.write(f"{expr(line)}: {q[0]}\n")   
             
         #print(list(answer)) 
 
@@ -105,8 +109,7 @@ def query(fname):
 
 
 
-#form_KB('ruleFile1.txt')
-#query('query1.txt')
+
 
 
 
@@ -166,7 +169,14 @@ class InputWidget(QMainWindow):
 
         global logic_prob
         logic_prob = val
-        self.win = AlgoWidget()
+
+        if val == 1:
+            self.win = Logic1Widget()
+        elif val == 2:
+            self.win = Logic2Widget()
+        else:
+            self.win = WumpusWorld()        
+        #self.win = AlgoWidget()
         self.win.show()
         self.close()
 
@@ -221,7 +231,7 @@ class AlgoWidget(QMainWindow):
 
         global logic_prob
         logic_prob = val
-        self.win = AlgoWidget()
+        self.win = InputWidget()
         self.win.show()
         self.close()
 
@@ -232,6 +242,144 @@ class AlgoWidget(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+
+
+
+class Logic1Widget(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle(f"AI Game")
+        window = QWidget()
+
+        self.normal_button = QPushButton()
+        self.normal_button.setFixedSize(QSize(200, 100))
+        self.normal_button.setText("Logic Problem 2")
+        self.normal_button.pressed.connect(partial(self.open_game, 2))
+
+        self.ab_button = QPushButton()
+        self.ab_button.setFixedSize(QSize(200, 100))
+        self.ab_button.setText("Logic Problem 3")
+        self.ab_button.pressed.connect(partial(self.open_game, 3))
+        vert_layout = QVBoxLayout()
+
+        form_KB('ruleFile1.txt')
+        query('query1.txt')
+        
+        lb1_R1 = QLabel(self)
+        lb1_R2 = QLabel(self)
+        lb1_R3 = QLabel(self)
+        lb1_R4 = QLabel(self)
+        lb1_R5 = QLabel(self)
+        lb1_R6 = QLabel(self)
+        lb1_R7 = QLabel(self)
+        lb1_R8 = QLabel(self)
+        lbl_R9 = QLabel(self)
+
+        lbl_list = [lb1_R1, lb1_R2, lb1_R3, lb1_R4, lb1_R5, lb1_R6, lb1_R7]
+        fp = open('output-query1.txt')
+        for i, line in enumerate(fp.readlines()):
+            if line:
+                lbl_list[i].setText(f"{line}")
+                vert_layout.addWidget(lbl_list[i])
+
+        layout =QHBoxLayout()
+        layout.addWidget(self.normal_button)
+        layout.addWidget(self.ab_button)
+
+        
+        vert_layout.addLayout(layout)
+
+        window.setLayout(vert_layout)
+        self.setCentralWidget(window)
+        self.resize(600, 600)
+        self.center()
+        self.show()
+
+    def open_game(self, val):
+
+        global logic_prob
+        logic_prob = val
+        if val == 2:
+            self.win = Logic2Widget()
+        else:
+            self.win = WumpusWorld()    
+        self.win.show()
+        self.close()
+
+    def center(self):
+
+        qr = self.frameGeometry()
+        cp  = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
+
+class Logic2Widget(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle(f"AI Game")
+        window = QWidget()
+
+        self.normal_button = QPushButton()
+        self.normal_button.setFixedSize(QSize(200, 100))
+        self.normal_button.setText("Logic Problem 1")
+        self.normal_button.pressed.connect(partial(self.open_game, 1))
+
+        self.ab_button = QPushButton()
+        self.ab_button.setFixedSize(QSize(200, 100))
+        self.ab_button.setText("Logic Problem 3")
+        self.ab_button.pressed.connect(partial(self.open_game, 3))
+        vert_layout = QVBoxLayout()
+        
+        lb1_R1 = QLabel(self)
+        lb1_R2 = QLabel(self)
+        lb1_R3 = QLabel(self)
+        lb1_R4 = QLabel(self)
+        lb1_R5 = QLabel(self)
+        lb1_R6 = QLabel(self)
+        lb1_R7 = QLabel(self)
+        lb1_R8 = QLabel(self)
+        lbl_R9 = QLabel(self)
+        lbl_R10 = QLabel(self)
+
+        lbl_list = [lb1_R1, lb1_R2, lb1_R3, lb1_R4, lb1_R5, lb1_R6, lb1_R7, lb1_R8, lbl_R9, lbl_R10]
+        fp = open('output-query2.txt')
+        for i, line in enumerate(fp.readlines()):
+            if line:
+                lbl_list[i].setText(f"{line}")
+                vert_layout.addWidget(lbl_list[i])
+
+        layout =QHBoxLayout()
+        layout.addWidget(self.normal_button)
+        layout.addWidget(self.ab_button)
+
+        
+        vert_layout.addLayout(layout)
+
+        window.setLayout(vert_layout)
+        self.setCentralWidget(window)
+        self.resize(600, 600)
+        self.center()
+        self.show()
+
+    def open_game(self, val):
+
+        global logic_prob
+        logic_prob = val
+        if val == 1:
+            self.win = Logic1Widget()
+        else:
+            self.win = WumpusWorld()    
+        self.win.show()
+        self.close()
+
+    def center(self):
+
+        qr = self.frameGeometry()
+        cp  = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
 
 class Tile(QWidget):
 
@@ -534,6 +682,6 @@ class WumpusWorld(QMainWindow):
 
 
 app = QApplication(sys.argv)
-ex = WumpusWorld()
+ex = InputWidget()
 sys.exit(app.exec_())
 

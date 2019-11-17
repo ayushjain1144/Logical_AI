@@ -1,0 +1,8 @@
+percept([s, b, g], t): percept of stench, breeze, glitter respectively at time t
+glitter(t): glitter percept
+breeze(t): breeze percept
+stench(t): stench percept
+At(agent, [x, y], t): presence of agent (human =, wumpus, pit) at position x, y at time t
+no_percept: no percept detected
+adjacent([x, y], [a, b]): points are adjacent
+bestAction(action, time): action is the best action at time t

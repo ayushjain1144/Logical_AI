@@ -1,7 +1,13 @@
 present(x) & alive(marcus, x)
+: False
 assassinate(x, caesar)
+: {marcus: x}
 loyal(marcus, caesar)
+: False
 ruler(x)
+: {caesar: x}
 volcano(x)
+: {x: 79}
 alive(marcus, 35)
-human(marcus)
+: False
+human(marcus): True
